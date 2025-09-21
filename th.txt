@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Youssef — Portfolio</title>
+  <meta name="description" content="Portfolio style terminal – no-cv-required" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0c0f12;           /* fond global */
+      --term:#0b0f0c;         /* fond terminal */
+      --glow:#00ff6a;         /* vert néon */
+      --muted:#6ee7a6;        /* vert clair */
+      --text:#d7ffe5;         /* texte pale */
+      --accent:#36f;          /* liens */
+      --warning:#ffd166;      /* points clés */
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:radial-gradient(60vw 60vw at 50% -10%,#122016 0%,var(--bg) 45%), var(--bg);color:var(--text);font-family:"Fira Mono", ui-monospace, monospace;}
+    a{color:var(--muted);text-decoration:none}
+    a:hover{color:#b9ffd5;text-decoration:underline}
+
+    /* Section écran d'accueil façon terminal */
+    .wrap{min-height:100dvh;display:grid;place-items:center;padding:32px}
+    .terminal{width:min(980px, 95vw);background:linear-gradient(180deg,rgba(0,0,0,.4),rgba(0,0,0,.8)), var(--term);border:1px solid #163b22;border-radius:14px;box-shadow:0 0 24px rgba(0,255,106,.2), inset 0 0 60px rgba(0,255,106,.04);position:relative}
+    .term-top{display:flex;gap:8px;align-items:center;padding:10px 14px;border-bottom:1px solid #1d4229;background:#09130d;border-radius:14px 14px 0 0}
+    .dot{width:10px;height:10px;border-radius:10px;display:inline-block}
+    .dot.red{background:#ff5f57}
+    .dot.yellow{background:#febc2e}
+    .dot.green{background:#28c840}
+    .term-body{padding:22px 22px 28px 22px;line-height:1.7;}
+
+    .prompt{color:#9dffbe}
+    .caret{display:inline-block;width:9px;height:1.2em;background:var(--glow);box-shadow:0 0 8px var(--glow);vertical-align:-2px;animation:blink 1s steps(2,end) infinite}
+    @keyframes blink{50%{opacity:0}}
+
+    .green{color:var(--glow)}
+    .muted{color:var(--muted)}
+    .found{color:var(--glow);font-weight:700}
+    .warn{color:var(--warning);font-weight:700}
+
+    .enter{display:inline-block;margin-top:20px;padding:10px 14px;border:1px solid #1c5c32;border-radius:10px;box-shadow:0 0 10px rgba(0,255,106,.2);transition:.2s;}
+    .enter:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,255,106,.25)}
+
+    .scroll-hint{opacity:.6;font-size:.9rem;margin-top:8px}
+
+    /* Section portfolio */
+    #portfolio{padding:70px 24px 110px;border-top:1px dashed #1e3e2a;background:linear-gradient(180deg, rgba(0,255,106,.04), transparent 50%), radial-gradient(1200px 500px at 50% -20%, rgba(0,255,106,.06), transparent 60%)}
+    .container{max-width:1100px;margin:0 auto}
+    .headline{display:flex;align-items:center;gap:12px;margin-bottom:26px}
+    .headline .bar{flex:1;height:1px;background:linear-gradient(90deg, rgba(0,255,106,.4), transparent)}
+    h1,h2,h3{margin:0}
+    h1{font-size:clamp(24px, 4vw, 38px)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+    .card{background:#0c140f;border:1px solid #1b4227;border-radius:14px;padding:18px;position:relative;overflow:hidden;transition:transform .18s ease, box-shadow .18s ease}
+    .card:hover{transform:translateY(-4px);box-shadow:0 10px 28px rgba(0,0,0,.4)}
+    .tag{display:inline-block;font-size:.75rem;padding:3px 8px;border:1px solid #1f5733;border-radius:999px;color:#afffcf;margin-right:6px;margin-bottom:10px}
+    .card h3{font-size:1.05rem;margin:8px 0 8px;color:#b9ffd5}
+    .card p{margin:0 0 12px;color:#c8ffdc;opacity:.9}
+    .card .links{display:flex;gap:12px}
+    .btn{display:inline-flex;align-items:center;gap:8px;border:1px solid #1f5733;border-radius:10px;padding:8px 12px;font-size:.92rem}
+    .btn:hover{background:#0b2014}
+
+    /* barre basse */
+    footer{position:sticky;bottom:0;background:#07100b;border-top:1px solid #143d25;padding:12px 18px;color:#a9d6bd;display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+
+    /* Animation dactylo */
+    .type{white-space:pre-wrap;overflow:hidden;border-right:2px solid transparent;animation:typing steps(60,end) var(--dur,2s) 1 both}
+    @keyframes typing{from{width:0}to{width:100%}}
+
+    /* Vue masquée/visible */
+    .hidden{display:none}
+    .center{text-align:center}
+  </style>
+</head>
+<body>
+  <!-- ÉCRAN D'ACCUEIL / TERMINAL -->
+  <main class="wrap" id="home">
+    <section class="terminal" aria-label="Terminal de sélection de candidat">
+      <div class="term-top">
+        <span class="dot red"></span>
+        <span class="dot yellow"></span>
+        <span class="dot green"></span>
+        <span style="margin-left:8px;color:#a9d6bd">karim@megasuss:~</span>
+      </div>
+      <div class="term-body" id="terminal">
+        <div><span class="prompt">&gt;</span> recherche de candidat... <span class="caret"></span></div>
+      </div>
+      <div class="center" style="padding:0 22px 22px">
+        <a href="#portfolio" class="enter" id="enterLink">&gt; Cliquez pour entrer dans le Portfolio</a>
+        <div class="scroll-hint">ou faites défiler ?</div>
+      </div>
+    </section>
+  </main>
+
+  <!-- PORTFOLIO -->
+  <section id="portfolio">
+    <div class="container">
+      <div class="headline">
+        <h1>Portfolio — Youssef Ermadi</h1>
+        <div class="bar"></div>
+      </div>
+
+      <p style="max-width:78ch;color:#b9ffd5">Ingénieur systèmes embarqués (C/C++, Qt, Linux, CI/CD). Voici une sélection de projets récents. Chaque carte contient un lien code et un lien démo quand disponible.</p>
+
+      <div class="grid" id="cards">
+        <!-- Exemple de projet 1 -->
+        <article class="card">
+          <span class="tag">C++/Qt</span><span class="tag">Algo</span>
+          <h3>IMAG-Editor — Optimisation SurfaceProcessing</h3>
+          <p>Réécriture et accélération ×60 d’un calcul d’aires (pots/trous/poches) avec tests autom.
+          Résolution 0,1?mm, CI Docker + Valgrind.</p>
+          <div class="links">
+            <a class="btn" href="#" target="_blank" rel="noreferrer">Code</a>
+            <a class="btn" href="#" target="_blank" rel="noreferrer">Slides</a>
+          </div>
+        </article>
+
+        <!-- Exemple de projet 2 -->
+        <article class="card">
+          <span class="tag">Python</span><span class="tag">FastAPI</span><span class="tag">Docker</span>
+          <h3>Anti-spoofing vocal — API AASIST</h3>
+          <p>Service REST d’inférence anti-deepfake vocal (Docker, tests, monitoring basique). Démo locale &amp; doc d’API.</p>
+          <div class="links">
+            <a class="btn" href="#" target="_blank" rel="noreferrer">Repo</a>
+            <a class="btn" href="#" target="_blank" rel="noreferrer">Demo</a>
+          </div>
+        </article>
+
+        <!-- Exemple de projet 3 -->
+        <article class="card">
+          <span class="tag">STM32</span><span class="tag">C</span>
+          <h3>STM32 — Contrôle moteur pas-à-pas</h3>
+          <p>Commande pas-à-pas + LED, boucles PID simples, télémétrie série. CubeIDE, oscillogrammes &amp; doc de banc.</p>
+          <div class="links">
+            <a class="btn" href="#" target="_blank" rel="noreferrer">Schema</a>
+            <a class="btn" href="#" target="_blank" rel="noreferrer">Vidéo</a>
+          </div>
+        </article>
+
+        <!-- Exemple de projet 4 -->
+        <article class="card">
+          <span class="tag">Raspberry Pi</span><span class="tag">IoT</span>
+          <h3>Station T/H/P — Web embarqué</h3>
+          <p>Acquisition capteurs &amp; serveur web C/Python (sockets), dashboard HTML responsive, persistance CSV.</p>
+          <div class="links">
+            <a class="btn" href="#" target="_blank" rel="noreferrer">Code</a>
+            <a class="btn" href="#" target="_blank" rel="noreferrer">Live</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>?? Le Mans, FR</span>
+    <span>?? <a href="mailto:youssef.2000.ermadi@gmail.com">youssef.2000.ermadi@gmail.com</a></span>
+    <span>in <a href="https://www.linkedin.com/in/youssef-ermadi-362bb0198/" target="_blank" rel="noreferrer">LinkedIn</a></span>
+    <span>?? <a href="#" target="_blank" rel="noreferrer">GitHub</a></span>
+  </footer>
+
+  <script>
+    // Script dactylo + lignes façon "no-cv-required"
+    const steps = [
+      { t: "> recherche de candidat...", d: 1000 },
+      { t: "> filtrage des CVs...", d: 900 },
+      { t: "> vérification de l’énergie... ", d: 700, add:"TROUVÉ"},
+      { t: "> vérification de la motivation... ", d: 700, add:"TROUVÉ"},
+      { t: "> vérification de la rapidité d’apprentissage... ", d: 800, add:"TROUVÉ"},
+      { t: "> CANDIDAT TROUVÉ : YOUSSEF ERMADI", d: 1100, cls:"found"},
+      { t: "> INITIALISATION DU PROTOCOLE DE CONTACT...", d: 1000 },
+      { t: "> Bonjour. J’ai compris la mission. Construisons votre vision.", d: 1200 },
+    ];
+
+    const term = document.getElementById('terminal');
+
+    function line(text, extra){
+      const row = document.createElement('div');
+      const prompt = document.createElement('span');
+      prompt.className = 'prompt';
+      prompt.textContent = '> ';
+      const span = document.createElement('span');
+      span.className = 'type';
+      span.style.setProperty('--dur', Math.max(1.2, text.length/18) + 's');
+      span.textContent = text.replace(/^\>\s?/, '');
+      row.appendChild(prompt);
+      row.appendChild(span);
+      if(extra){ row.appendChild(extra); }
+      term.appendChild(row);
+    }
+
+    (async function run(){
+      term.innerHTML = '';
+      for(const s of steps){
+        let extra=null;
+        if(s.add){
+          extra = document.createElement('span');
+          extra.textContent = s.add;
+          extra.className = 'found';
+          extra.style.marginLeft = '8px';
+        }
+        if(s.cls==='found'){
+          const strong = document.createElement('span');
+          strong.textContent = s.t.replace(/^\>\s?/, '');
+          strong.className = 'found';
+          line(' ', strong);
+        }else{
+          line(s.t);
+        }
+        await new Promise(r=>setTimeout(r, s.d));
+      }
+      // Ajout du lien à la fin (encore)
+      const end = document.createElement('div');
+      end.innerHTML = '<span class="prompt">&gt;</span> <a class="enter" href="#portfolio">Entrer dans le portfolio</a>';
+      term.appendChild(end);
+    })();
+
+    // Scroll doux pour lien "Entrer"
+    document.getElementById('enterLink').addEventListener('click', (e)=>{
+      const hash = e.currentTarget.getAttribute('href');
+      if(hash.startsWith('#')){
+        e.preventDefault();
+        document.querySelector(hash).scrollIntoView({behavior:'smooth'});
+      }
+    });
+  </script>
+</body>
+</html>
